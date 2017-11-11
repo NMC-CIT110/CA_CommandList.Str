@@ -9,7 +9,9 @@ namespace CA_CommandList
 {
     class Program
     {
-        #region GLOBALS
+        //
+        // list of all commands as an enum
+        //
         private enum FinchCommand
         {
             DONE,
@@ -23,25 +25,29 @@ namespace CA_CommandList
             LEDOFF
         }
 
-        private const int NUMBER_OF_COMMNANDS = 6;
-        private const int DELAY_DURATION = 2000;
-        private const int MOTOR_SPEED = 100;
-        private const int LED_BRIGHTNESS = 200;
-
-        #endregion
-
         static void Main(string[] args)
         {
-            FinchCommand[] commands = new FinchCommand[NUMBER_OF_COMMNANDS];
+            //
+            // Note: initial Finch configuration values taken from a static
+            //       config file
+            int numberOfCommands = DefaultFinchConfig.NUMBER_OF_COMMNANDS;
+            int delayDuration = DefaultFinchConfig.DELAY_DURATION;
+            int motorSpeed = DefaultFinchConfig.MOTOR_SPEED;
+            int ledBrightness = DefaultFinchConfig.MOTOR_SPEED;
+
+            //
+            // TODO - 1) Comment out FinchCommand array
+            //
+            FinchCommand[] commands = new FinchCommand[numberOfCommands];
             Finch myFinch = new Finch();
 
             DisplayWelcomeScreen();
 
             InitializeFinch(myFinch);
 
-            DisplayGetFinchCommands(commands);
+            DisplayGetFinchCommands(commands, numberOfCommands);
 
-            ProcessFinchCommands(myFinch, commands);
+            ProcessFinchCommands(myFinch, commands, motorSpeed, ledBrightness, delayDuration);
 
             TerminateFinch(myFinch);
 
@@ -169,11 +175,14 @@ namespace CA_CommandList
             DisplayContinuePrompt();
         }
 
+        //
+        // TODO - 2) Change the type in the parameter list to a list of FinchCommand
+        //
         /// <summary>
         /// Add the user command sequence to the command array
         /// </summary>
         /// <param name="commands">array of FinchCommand</param>
-        private static void DisplayGetFinchCommands(FinchCommand[] commands)
+        private static void DisplayGetFinchCommands(FinchCommand[] commands, int numberOfCommands)
         {
             Console.Clear();
 
@@ -200,9 +209,11 @@ namespace CA_CommandList
             Console.WriteLine();
 
             //
+            // TODO - 4) Use the Add method to add the command to the FinchCommand list
+            //
             // Get individual commands from the user and add each to the array of commands
             //
-            for (int index = 0; index < NUMBER_OF_COMMNANDS; index++)
+            for (int index = 0; index < numberOfCommands; index++)
             {
                 commands[index] = GetFinchCommandValue();
             }
@@ -267,12 +278,15 @@ namespace CA_CommandList
             return userCommand;
         }
 
+        //
+        // TODO - 3) Change the type in the parameter list to a list of FinchCommand
+        //
         /// <summary>
         /// Process each command 
         /// </summary>
         /// <param name="myFinch">Finch robot object</param>
         /// <param name="commands">FinchCommand</param>
-        private static void ProcessFinchCommands(Finch myFinch, FinchCommand[] commands)
+        private static void ProcessFinchCommands(Finch myFinch, FinchCommand[] commands, int motorSpeed, int ledBrightness, int delayDuration)
         {
             Console.Clear();
             Console.WriteLine();
@@ -288,25 +302,25 @@ namespace CA_CommandList
                     case FinchCommand.DONE:
                         break;
                     case FinchCommand.MOVEFORWARD:
-                        myFinch.setMotors(MOTOR_SPEED, MOTOR_SPEED);
+                        myFinch.setMotors(motorSpeed, motorSpeed);
                         break;
                     case FinchCommand.MOVEBACKWARD:
-                        myFinch.setMotors(-MOTOR_SPEED, -MOTOR_SPEED);
+                        myFinch.setMotors(-motorSpeed, -motorSpeed);
                         break;
                     case FinchCommand.STOPMOTORS:
                         myFinch.setMotors(0, 0);
                         break;
                     case FinchCommand.DELAY:
-                        myFinch.wait(DELAY_DURATION);
+                        myFinch.wait(delayDuration);
                         break;
                     case FinchCommand.TURNRIGHT:
-                        myFinch.setMotors(MOTOR_SPEED, -MOTOR_SPEED);
+                        myFinch.setMotors(motorSpeed, -motorSpeed);
                         break;
                     case FinchCommand.TURNLEFT:
-                        myFinch.setMotors(-MOTOR_SPEED, MOTOR_SPEED);
+                        myFinch.setMotors(-motorSpeed, motorSpeed);
                         break;
                     case FinchCommand.LEDON:
-                        myFinch.setLED(LED_BRIGHTNESS, LED_BRIGHTNESS, LED_BRIGHTNESS);
+                        myFinch.setLED(ledBrightness, ledBrightness, ledBrightness);
                         break;
                     case FinchCommand.LEDOFF:
                         myFinch.setLED(0, 0, 0);
